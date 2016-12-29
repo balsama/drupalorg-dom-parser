@@ -1,0 +1,24 @@
+{
+    "name": "balsama/drupalorg-dom-parser",
+    "description": "Scraps statistics about projects on Drupal.org",
+    "type": "library",
+    "require": {
+        "paquettg/php-html-parser": "^1.7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Balsam",
+            "email": "balsam.adam@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Balsama\\DrupalOrgProject\\": "src"
+        }
+    }
+}
