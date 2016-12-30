@@ -98,7 +98,12 @@ class Stats {
         $this->setStatsDom($stats_dom);
         $all_project_usage = $this->fetchAllProjectUsage();
         $this->setAllProjectUsage($all_project_usage);
-        if ($project_name != 'drupal') {
+        if (($project_name != 'drupal') && ($project_name != 'imce_wysiwyg')) {
+            // Main drupal project has a different project page than other
+            // projects so we can't parse it the same way. imce_wysiwyg also
+            // seems to be be different somehow. I'm not troubleshooting what
+            // exactly is different because I'd rather just make
+            // Stats::getProjectInfo more scalable.
             $project_info = $this->fetchProjectInfo();
             $this->setProjectInfo($project_info);
         }
