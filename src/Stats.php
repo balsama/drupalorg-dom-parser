@@ -220,10 +220,25 @@ class Stats {
      *   Latest D8 project reported installs.
      */
     public function getCurrentD8Usage() {
-        $all_project_usage = $this->fetchAllProjectUsage();
-        // @TODO: This assumed that there are exactly two branches (7.x and 8.x)
-        // which is entirely wrong. @see StatsTest::testUsageStatistics.
-        return intval(str_replace(',', '', $all_project_usage[0]['8.x']));
+        return $this->getCurrentNthUsage('8.x');
+    }
+
+    /**
+     * @return int
+     *   Latest D7 project reported installs.
+     */
+    public function getCurrentD7Usage() {
+        return $this->getCurrentNthUsage('7.x');
+    }
+
+    /**
+     * @param $nth
+     *   The major drupal version #. E.g. `8.x`.
+     * @return int
+     */
+    private function getCurrentNthUsage($nth) {
+        $all_project_usage = $this->all_project_usage;
+        return intval(str_replace(',', '', $all_project_usage[0][$nth]));
     }
 
     /**
