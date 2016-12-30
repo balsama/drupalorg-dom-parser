@@ -98,8 +98,10 @@ class Stats {
         $this->setStatsDom($stats_dom);
         $all_project_usage = $this->fetchAllProjectUsage();
         $this->setAllProjectUsage($all_project_usage);
-        $project_info = $this->fetchProjectInfo();
-        $this->setProjectInfo($project_info);
+        if ($project_name != 'drupal') {
+            $project_info = $this->fetchProjectInfo();
+            $this->setProjectInfo($project_info);
+        }
     }
 
     /**
