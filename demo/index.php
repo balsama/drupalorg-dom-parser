@@ -27,5 +27,8 @@ print '<p>' . $full . '</p>';
 
 print '<p>' . $name . 'is marked as ' . $project->getD8Stability() . '</p>';
 
-print '<p>' . number_format($project->getCurrentD8Usage()) . ' sites report using ' . $name . '</p>';
+print '<p>' . number_format($project->getCurrentD8Usage()) . ' Drupal 8 sites report using ' . $name . '</p>';
 
+$maintenance = ($project->isActivelyMaintained()) ? '':'not ';
+
+print '<p>' . $name . ' is ' . $maintenance . 'actively maintained.';

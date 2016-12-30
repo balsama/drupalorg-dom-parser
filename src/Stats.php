@@ -1,6 +1,7 @@
 <?php
 
 namespace Balsama\DrupalOrgProject;
+
 use PHPHtmlParser\Dom;
 
 class Stats {
@@ -36,7 +37,7 @@ class Stats {
      *   The machine name of a Drupal.org project.
      * @return \PHPHtmlParser\Dom
      */
-    public function getDom($project_name) {
+    private function fetchDom($project_name) {
         $dom = new Dom;
         $this->dom = $dom->loadFromUrl('https://www.drupal.org/project/' . $project_name);
         return $this->dom;
@@ -45,8 +46,17 @@ class Stats {
     /**
      * @param Dom $dom
      */
-    public function setDom(Dom $dom) {
+    private function setDom(Dom $dom) {
         $this->dom = $dom;
+    }
+
+    /**
+     * Access method for main project page dom.
+     *
+     * @return object PHPHtmlParser\Dom
+     */
+    public function getDom() {
+        return $this->dom;
     }
 
     /**
@@ -54,7 +64,7 @@ class Stats {
      *   The machine name of a Drupal.org project.
      * @return \PHPHtmlParser\Dom
      */
-    public function getStatsDom($project_name) {
+    private function fetchStatsDom($project_name) {
         $stats_dom = new Dom;
         $this->stats_dom = $stats_dom->loadFromUrl('https://www.drupal.org/project/usage/' . $project_name);
         return $this->stats_dom;
@@ -63,8 +73,17 @@ class Stats {
     /**
      * @param Dom $stats_dom
      */
-    public function setStatsDom(Dom $stats_dom) {
+    private function setStatsDom(Dom $stats_dom) {
         $this->stats_dom = $stats_dom;
+    }
+
+    /**
+     * Access method for project statistics page dom.
+     *
+     * @return object PHPHtmlParser\Dom
+     */
+    public function getStatsDom() {
+        return $this->stats_dom;
     }
 
     /**
@@ -73,13 +92,13 @@ class Stats {
      *   The machine name of a Drupal.org project.
      */
     public function __construct($project_name) {
-        $dom = $this->getDom($project_name);
+        $dom = $this->fetchDom($project_name);
         $this->setDom($dom);
-        $stats_dom = $this->getStatsDom($project_name);
+        $stats_dom = $this->fetchStatsDom($project_name);
         $this->setStatsDom($stats_dom);
-        $all_project_usage = $this->getAllProjectUsage();
+        $all_project_usage = $this->fetchAllProjectUsage();
         $this->setAllProjectUsage($all_project_usage);
-        $project_info = $this->getProjectInfo();
+        $project_info = $this->fetchProjectInfo();
         $this->setProjectInfo($project_info);
     }
 
@@ -95,7 +114,7 @@ class Stats {
      *   - downloads (int)
      *   - last_modified (date)
      */
-    public function getProjectInfo() {
+    private function fetchProjectInfo() {
         // @TODO: make this a little smarter so that it returns all of the
         // values from the Project Information section rather than hard-coding
         // which ones we want.
@@ -138,10 +157,19 @@ class Stats {
     }
 
     /**
+     * Access method for project info.
+     *
+     * @return array
+     */
+    public function getProjectInfo() {
+        return $this->project_info;
+    }
+
+    /**
      * @return array
      *   Rows of the specified project's usage statistic table.
      */
-    public function getAllProjectUsage() {
+    private function fetchAllProjectUsage() {
         $stats_dom = $this->stats_dom;
         $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
         $stat = [];
@@ -149,6 +177,15 @@ class Stats {
             $stat[] = $this->statRowProcess($stat_row);
         }
         return $stat;
+    }
+
+    /**
+     * Access method for project usage.
+     *
+     * @return array
+     */
+    public function getAllProjectUsage() {
+        return $this->all_project_usage;
     }
 
     /**
@@ -166,16 +203,15 @@ class Stats {
      * @return array
      */
     private function statRowProcess($stat_row) {
-        $date = $stat_row->firstChild();
-        $seven_ex = $date->nextSibling();
-        $eight_ex = $seven_ex->nextSibling();
-        $total = $eight_ex->nextSibling();
-        $stat = [
-            'date' => date('d-M-Y', strtotime($date->innerHtml())),
-            '7.x' => $seven_ex->innerHtml(),
-            '8.x' => $eight_ex->innerHtml(),
-            'total' => $total->innerHtml(),
-        ];
+        $count = count($stat_row);
+        $stat = [];
+        $stat['date'] = $stat_row->firstChild()->innerHtml();
+        $stat['total'] = intval(str_replace(',', '', $stat_row->find('.project-usage-numbers', ($count - 3))->innerHtml()));
+        $add = (8 - ($count - 4));
+        for($count = ($count - 4); $count >= 0; $count--) {
+            $major = ($count + $add);
+            $stat[$major . '.x'] = intval(str_replace(',', '', $stat_row->find('.project-usage-numbers', $count)->innerHtml()));
+        }
         return $stat;
     }
 
@@ -184,9 +220,9 @@ class Stats {
      *   Latest D8 project reported installs.
      */
     public function getCurrentD8Usage() {
-        $all_project_usage = $this->getAllProjectUsage();
+        $all_project_usage = $this->fetchAllProjectUsage();
         // @TODO: This assumed that there are exactly two branches (7.x and 8.x)
-        // which is entirely wrong.
+        // which is entirely wrong. @see StatsTest::testUsageStatistics.
         return intval(str_replace(',', '', $all_project_usage[0]['8.x']));
     }
 

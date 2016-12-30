@@ -1,0 +1,27 @@
+language: php
+
+cache:
+  bundler: true
+  apt: true
+  directories:
+    - "$HOME/.composer/cache"
+
+php:
+  - 5.6
+
+# Enable container-based builds
+sudo: false
+
+before_install:
+  # Diable xdebug for composer performance
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+
+install:
+  - composer install
+
+script:
+  - vendor/bin/phpunit
+
+matrix:
+  fast_finish: true
