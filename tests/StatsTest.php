@@ -52,4 +52,17 @@ class StatsTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($d7usage > 610000);
         $this->assertTrue($d7usage < 670000);
     }
+
+    /**
+     * Projects with no nth release don't return usage statistics for that
+     * release.
+     */
+    public function testNoReleaseStatistics() {
+        // Facet API was renamed facets, so it should never have a D8 release.
+        $project_name = 'facetapi';
+        $project = new Stats($project_name);
+
+        $d8_usage = $project->getCurrentD8Usage();
+        $this->assertFalse(boolval($d8_usage));
+    }
  }

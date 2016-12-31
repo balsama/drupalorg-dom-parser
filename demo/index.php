@@ -3,7 +3,9 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 include __DIR__.'/../vendor/autoload.php';
 
-$project_name = 'pathauto';
+echo '<pre>';
+
+$project_name = 'facets';
 $project = new Balsama\DrupalOrgProject\Stats($project_name);
 
 $name = $project->getHumanReadableName();
@@ -32,3 +34,5 @@ print '<p>' . number_format($project->getCurrentD8Usage()) . ' Drupal 8 sites re
 $maintenance = ($project->isActivelyMaintained()) ? '':'not ';
 
 print '<p>' . $name . ' is ' . $maintenance . 'actively maintained.';
+
+echo '</pre>';

@@ -178,10 +178,13 @@ class Stats {
      */
     private function fetchAllProjectUsage() {
         $stats_dom = $this->stats_dom;
+        $stat_cols = $stats_dom->find('#project-usage-project-api thead tr', 0);
+        $cols = count($stat_cols);
+        $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
         $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
         $stat = [];
         foreach ($stat_rows as $stat_row) {
-            $stat[] = $this->statRowProcess($stat_row);
+            $stat[] = $this->statRowProcess($stat_row, $highest_release);
         }
         return $stat;
     }
@@ -209,12 +212,12 @@ class Stats {
      * @param $stat_row
      * @return array
      */
-    private function statRowProcess($stat_row) {
+    private function statRowProcess($stat_row, $highest_release) {
         $count = count($stat_row);
         $stat = [];
         $stat['date'] = $stat_row->firstChild()->innerHtml();
         $stat['total'] = intval(str_replace(',', '', $stat_row->find('.project-usage-numbers', ($count - 3))->innerHtml()));
-        $add = (8 - ($count - 4));
+        $add = ($highest_release - ($count - 4));
         for($count = ($count - 4); $count >= 0; $count--) {
             $major = ($count + $add);
             $stat[$major . '.x'] = intval(str_replace(',', '', $stat_row->find('.project-usage-numbers', $count)->innerHtml()));
@@ -245,6 +248,9 @@ class Stats {
      */
     private function getCurrentNthUsage($nth) {
         $all_project_usage = $this->all_project_usage;
+        if (!isset($all_project_usage[0][$nth])) {
+            return 0;
+        }
         return intval(str_replace(',', '', $all_project_usage[0][$nth]));
     }
 
