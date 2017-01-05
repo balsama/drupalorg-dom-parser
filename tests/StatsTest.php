@@ -30,7 +30,7 @@ class StatsTest extends PHPUnit_Framework_TestCase {
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
-        $this->assertTrue($usage > 13000);
+        $this->assertTrue($usage > 12000);
         $this->assertTrue($usage < 20000);
 
         $d7usage = $project->getCurrentD7Usage();
@@ -44,12 +44,12 @@ class StatsTest extends PHPUnit_Framework_TestCase {
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
-        $this->assertTrue($usage > 24000);
+        $this->assertTrue($usage > 19000);
         $this->assertTrue($usage < 40000);
 
         $d7usage = $project->getCurrentD7Usage();
         $this->assertInternalType('int', $d7usage);
-        $this->assertTrue($d7usage > 610000);
+        $this->assertTrue($d7usage > 600000);
         $this->assertTrue($d7usage < 670000);
     }
 
