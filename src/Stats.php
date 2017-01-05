@@ -33,6 +33,12 @@ class Stats {
     private $project_info;
 
     /**
+     * @var string
+     * The machine name of the project.
+     */
+    private $machine_name;
+
+    /**
      * @param $project_name
      *   The machine name of a Drupal.org project.
      * @return \PHPHtmlParser\Dom
@@ -107,6 +113,7 @@ class Stats {
             $project_info = $this->fetchProjectInfo();
             $this->setProjectInfo($project_info);
         }
+        $this->machine_name = $project_name;
     }
 
     /**
@@ -360,6 +367,10 @@ class Stats {
     public function getHumanReadableName() {
         $dom = $this->dom;
         return $dom->find('#page-subtitle')->innerHtml();
+    }
+
+    public function getMachineName() {
+        return $this->machine_name;
     }
 
 }
