@@ -357,7 +357,7 @@ class Stats {
             elseif (preg_match('/^8\.x-[1-9]\.\d*-rc\d*/', $release)) {
                 return 'rc';
             }
-            elseif (preg_match('/^8\.x-[1-9]\.\d*-dev\d*/', $release)) {
+            elseif (preg_match('/^8\.x-[1-9]\.x-dev/', $release)) {
                 return 'dev';
             }
         }

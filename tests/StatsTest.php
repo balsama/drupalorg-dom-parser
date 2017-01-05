@@ -65,4 +65,22 @@ class StatsTest extends PHPUnit_Framework_TestCase {
         $d8_usage = $project->getCurrentD8Usage();
         $this->assertFalse(boolval($d8_usage));
     }
+
+    /**
+     * Proper stability is returned, including dev branches.
+     */
+    public function testDevReleaseStatus() {
+        // Admin menu has a dev branch, but no further development. If they ever
+        // tag something there, this test should fail.
+        // Facet API was renamed facets, so it should never have a D8 release.
+        $project_name = 'admin_menu';
+        $project = new Stats($project_name);
+
+        $status = $project->getD8Stability();
+        echo '|||STATUS: ' . $status . '|||';
+        $this->assertTrue($status === 'dev');
+
+        // @todo test to make sure full release and other regex still work.
+
+    }
  }
