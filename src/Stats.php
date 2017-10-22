@@ -187,14 +187,16 @@ class Stats {
      *   Rows of the specified project's usage statistic table.
      */
     private function fetchAllProjectUsage() {
+        $stat = [];
         $stats_dom = $this->stats_dom;
         $stat_cols = $stats_dom->find('#project-usage-project-api thead tr', 0);
-        $cols = count($stat_cols);
-        $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
-        $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
-        $stat = [];
-        foreach ($stat_rows as $stat_row) {
-            $stat[] = $this->statRowProcess($stat_row, $highest_release);
+        if ($stat_cols !== null) {
+            $cols = count($stat_cols);
+            $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
+            $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
+            foreach ($stat_rows as $stat_row) {
+                $stat[] = $this->statRowProcess($stat_row, $highest_release);
+            }
         }
         return $stat;
     }
