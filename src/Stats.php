@@ -261,7 +261,7 @@ class Stats {
     private function getCurrentNthUsage($nth) {
         $all_project_usage = $this->all_project_usage;
         // Sometimes the current week erroneously reports 0's so go to the next.
-        foreach ([0,1] as $row) {
+        for ($row = 0; $row < count($all_project_usage) && $row <= 1; $row++) {
             if (!empty(intval($all_project_usage[$row][$nth]))) {
                 return intval(str_replace(',', '', $all_project_usage[$row][$nth]));
             }
