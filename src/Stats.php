@@ -262,7 +262,8 @@ class Stats {
         $all_project_usage = $this->all_project_usage;
         // Sometimes the current week erroneously reports 0's so go to the next.
         for ($row = 0; $row < count($all_project_usage) && $row <= 1; $row++) {
-            if (!empty(intval($all_project_usage[$row][$nth]))) {
+            if (isset($all_project_usage[$row][$nth]) &&
+                !empty(intval($all_project_usage[$row][$nth]))) {
                 return intval(str_replace(',', '', $all_project_usage[$row][$nth]));
             }
         }
