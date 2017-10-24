@@ -133,33 +133,27 @@ class Stats {
         // values from the Project Information section rather than hard-coding
         // which ones we want.
         $dom = $this->dom;
+
+        /* @var $project_info \PHPHtmlParser\Dom\HtmlNode */
         $project_info = $dom->find('.project-info');
-        $maintenance_status = $project_info->firstChild();
-        $development_status = $maintenance_status->nextSibling();
-        // If the project has automated testing enabled, the Reported Installs
-        // stat is bumped down in the list.
-        if (substr($development_status->nextSibling()->innerHtml(), 0, strlen('Reported installs: ')) === 'Reported installs: ') {
-            $reported_installs = $development_status->nextSibling();
+
+        /* @var $list_items \PHPHtmlParser\Dom\HtmlNode[] */
+        $list_items = $project_info->getChildren();
+        foreach ($list_items as $list_item) {
+          if (strpos($list_item->innerhtml(), 'sites report using this')) {
+            // This is the stats item.
+            $stats = $list_item;
+          }
         }
-        else {
-            $reported_installs = $development_status->nextSibling()->nextSibling();
+        if (!isset($stats)) {
+          return;
         }
-        $downloads = $reported_installs->nextSibling();
-        // If the project has any tags, the Last Modified stat is bumped down
-        // too.
-        if (substr($downloads->nextSibling()->innerHtml(), 0, strlen('Last modified:')) === 'Last modified:') {
-            $last_modified = $downloads->nextSibling();
-        }
-        else {
-            $last_modified = $downloads->nextSibling()->nextSibling();
-        }
+
         $processed_project_info = [
-            'maintenance_status' => $maintenance_status->find('a')->innerHtml(),
-            'development_status' => $development_status->find('a')->innerHtml(),
-            'reported_installs' => intval(str_replace(',', '', $reported_installs->find('strong')->innerHtml())),
-            'downloads' => intval(str_replace(',', '', substr($downloads->innerHtml(), 11))),
-            'last_modified' => date('d-M-Y', strtotime(substr($last_modified->innerHtml(), 15))),
+            'reported_installs' => intval(str_replace(',', '', $stats->find('strong')->innerHtml())),
+            'downloads' => intval(str_replace(',', '', substr($stats->find('small')->innerHtml(), 0, -10))),
         ];
+
         return $processed_project_info;
     }
 
@@ -186,6 +180,9 @@ class Stats {
     private function fetchAllProjectUsage() {
         $stats_dom = $this->stats_dom;
         $stat_cols = $stats_dom->find('#project-usage-project-api thead tr', 0);
+        if (!isset($stat_cols)) {
+          return ['No stats'];
+        }
         $cols = count($stat_cols);
         $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
         $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');

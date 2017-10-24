@@ -30,8 +30,8 @@ class StatsTest extends PHPUnit_Framework_TestCase {
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
-        $this->assertTrue($usage > 12000);
-        $this->assertTrue($usage < 20000);
+        $this->assertTrue($usage > 30000);
+        $this->assertTrue($usage < 70000);
 
         $d7usage = $project->getCurrentD7Usage();
         $this->assertInternalType('int', $d7usage);
@@ -44,8 +44,8 @@ class StatsTest extends PHPUnit_Framework_TestCase {
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
-        $this->assertTrue($usage > 19000);
-        $this->assertTrue($usage < 40000);
+        $this->assertTrue($usage > 50000);
+        $this->assertTrue($usage < 80000);
 
         $d7usage = $project->getCurrentD7Usage();
         $this->assertInternalType('int', $d7usage);
@@ -72,13 +72,11 @@ class StatsTest extends PHPUnit_Framework_TestCase {
     public function testDevReleaseStatus() {
         // Admin menu has a dev branch, but no further development. If they ever
         // tag something there, this test should fail.
-        // Facet API was renamed facets, so it should never have a D8 release.
-        $project_name = 'admin_menu';
+        $project_name = 'media_acquiadam';
         $project = new Stats($project_name);
 
         $status = $project->getD8Stability();
-        echo '|||STATUS: ' . $status . '|||';
-        $this->assertTrue($status === 'dev');
+        $this->assertTrue($status === 'no D8 development');
 
         // @todo test to make sure full release and other regex still work.
 
