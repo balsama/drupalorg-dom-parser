@@ -278,9 +278,15 @@ class Stats {
     public function getRecommendedReleases() {
         $dom = $this->dom;
         $recommended_releases = [];
-        $recommended_releases_dom = $dom->find('.view-id-drupalorg_project_downloads > .view-content table tbody tr');
+        $recommended_releases_dom = $dom->find('.view-id-drupalorg_project_downloads .view-content > div.release');
+        /* @var $recommended_release \PHPHtmlParser\Dom\HtmlNode */
         foreach ($recommended_releases_dom as $recommended_release) {
-            $recommended_releases[] = $recommended_release->find('a')->innerHtml();
+            if (!empty(trim($recommended_release->innerHtml()))) {
+                if (strpos($recommended_release->innerHtml(), 'released')) {
+                    $releases[] = $recommended_release->find('span > strong.field-content a')
+                        ->innerHtml();
+                }
+            }
         }
         return $recommended_releases;
     }
@@ -292,9 +298,13 @@ class Stats {
     public function getAllReleases() {
         $dom = $this->dom;
         $releases = [];
-        $all_releases_dom = $dom->find('.view-id-drupalorg_project_downloads .view-content table tbody tr');
+        $all_releases_dom = $dom->find('.view-id-drupalorg_project_downloads .view-content > div.release');
+        /* @var $release \PHPHtmlParser\Dom\HtmlNode */
         foreach ($all_releases_dom as $release) {
-            $releases[] = $release->find('a')->innerHtml();
+            if (!empty(trim($release->innerhtml()))) {
+              $releases[] = $release->find('span > strong.field-content a')
+                ->innerHtml();
+            }
         }
         return $releases;
     }

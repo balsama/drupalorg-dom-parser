@@ -5,6 +5,11 @@ use PHPHtmlParser\Dom;
 
 class StatsTest extends PHPUnit_Framework_TestCase {
 
+    public function testGetD8Stability() {
+        $project = new Stats('metatag');
+        $baz = $project->getD8Stability();
+    }
+
     /**
      * The dom and stats_dom variables are set and that they are
      * PHPHtmlParser\Dom objects.
@@ -72,11 +77,8 @@ class StatsTest extends PHPUnit_Framework_TestCase {
     public function testDevReleaseStatus() {
         // Admin menu has a dev branch, but no further development. If they ever
         // tag something there, this test should fail.
-        $project_name = 'media_acquiadam';
+        $project_name = 'admin_menu';
         $project = new Stats($project_name);
-
-        $status = $project->getD8Stability();
-        $this->assertTrue($status === 'no D8 development');
 
         // @todo test to make sure full release and other regex still work.
 
