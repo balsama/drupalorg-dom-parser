@@ -1,6 +1,6 @@
 {
     "name": "balsama/drupalorg-dom-parser",
-    "description": "Scraps statistics about projects on Drupal.org",
+    "description": "Scrapes statistics about projects on Drupal.org",
     "type": "library",
     "require": {
         "paquettg/php-html-parser": "^1.7.0"
@@ -16,6 +16,7 @@
         }
     ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Balsama\\DrupalOrgProject\\": "src"

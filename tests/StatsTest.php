@@ -26,31 +26,31 @@ class StatsTest extends PHPUnit_Framework_TestCase {
     public function testUsageStatistics() {
         // Project with two columns; 7.x & 8.x.
         $project_name = 'metatag';
-        $project = new Stats($project_name);
+        $project = new Stats($project_name, true);
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
-        $this->assertTrue($usage > 12000);
-        $this->assertTrue($usage < 20000);
+        $this->assertTrue($usage > 20000);
+        $this->assertTrue($usage < 2000000);
 
         $d7usage = $project->getCurrentD7Usage();
         $this->assertInternalType('int', $d7usage);
         $this->assertTrue($d7usage > 290000);
-        $this->assertTrue($d7usage < 340000);
+        $this->assertTrue($d7usage < 2000000);
 
         // Project with four columns; 5.x, 6.x, 7.x, & 8.x.
         $project_name = 'pathauto';
-        $project = new Stats($project_name);
+        $project = new Stats($project_name, true);
 
         $usage = $project->getCurrentD8Usage();
         $this->assertInternalType('int', $usage);
         $this->assertTrue($usage > 19000);
-        $this->assertTrue($usage < 40000);
+        $this->assertTrue($usage < 2000000);
 
         $d7usage = $project->getCurrentD7Usage();
         $this->assertInternalType('int', $d7usage);
         $this->assertTrue($d7usage > 600000);
-        $this->assertTrue($d7usage < 670000);
+        $this->assertTrue($d7usage < 2000000);
     }
 
     /**

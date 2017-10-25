@@ -45,6 +45,7 @@ class Stats {
      */
     private function fetchDom($project_name) {
         $dom = new Dom;
+        $dom->setOptions(['cleanupInput' => false]);
         $this->dom = $dom->loadFromUrl('https://www.drupal.org/project/' . $project_name);
         return $this->dom;
     }
@@ -97,14 +98,16 @@ class Stats {
      * @param $project_name
      *   The machine name of a Drupal.org project.
      */
-    public function __construct($project_name) {
-        $dom = $this->fetchDom($project_name);
-        $this->setDom($dom);
+    public function __construct($project_name, $statsOnly = false) {
+        if ($statsOnly === false) {
+            $dom = $this->fetchDom($project_name);
+            $this->setDom($dom);
+        }
         $stats_dom = $this->fetchStatsDom($project_name);
         $this->setStatsDom($stats_dom);
         $all_project_usage = $this->fetchAllProjectUsage();
         $this->setAllProjectUsage($all_project_usage);
-        if (($project_name != 'drupal') && ($project_name != 'imce_wysiwyg')) {
+        if ($statsOnly === false && ($project_name != 'drupal') && ($project_name != 'imce_wysiwyg')) {
             // Main drupal project has a different project page than other
             // projects so we can't parse it the same way. imce_wysiwyg also
             // seems to be be different somehow. I'm not troubleshooting what
@@ -184,14 +187,16 @@ class Stats {
      *   Rows of the specified project's usage statistic table.
      */
     private function fetchAllProjectUsage() {
+        $stat = [];
         $stats_dom = $this->stats_dom;
         $stat_cols = $stats_dom->find('#project-usage-project-api thead tr', 0);
-        $cols = count($stat_cols);
-        $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
-        $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
-        $stat = [];
-        foreach ($stat_rows as $stat_row) {
-            $stat[] = $this->statRowProcess($stat_row, $highest_release);
+        if ($stat_cols !== null) {
+            $cols = count($stat_cols);
+            $highest_release = substr($stat_cols->find('.project-usage-numbers', ($cols - 4))->innerHtml(), 0, 2);
+            $stat_rows = $stats_dom->find('#project-usage-project-api tbody tr');
+            foreach ($stat_rows as $stat_row) {
+                $stat[] = $this->statRowProcess($stat_row, $highest_release);
+            }
         }
         return $stat;
     }
@@ -255,10 +260,14 @@ class Stats {
      */
     private function getCurrentNthUsage($nth) {
         $all_project_usage = $this->all_project_usage;
-        if (!isset($all_project_usage[0][$nth])) {
-            return 0;
+        // Sometimes the current week erroneously reports 0's so go to the next.
+        for ($row = 0; $row < count($all_project_usage) && $row <= 1; $row++) {
+            if (isset($all_project_usage[$row][$nth]) &&
+                !empty(intval($all_project_usage[$row][$nth]))) {
+                return intval(str_replace(',', '', $all_project_usage[$row][$nth]));
+            }
         }
-        return intval(str_replace(',', '', $all_project_usage[0][$nth]));
+        return 0;
     }
 
     /**
