@@ -291,9 +291,10 @@ class Stats {
         foreach ($all_releases_dom as $release) {
             if (!empty(trim($release->innerHtml()))) {
                 if (strpos($release->innerHtml(), 'Development version') !== false) {
-                    $releases[] = $release->find('.release-info > p > a');
+                    $releases[] = $release->find('.release-info > p > a')->innerHtml();
                 }
-                else {
+                $potential = $release->find('span > strong.field-content a');
+                if ($potential['collection']) {
                     $releases[] = $release->find('span > strong.field-content a')->innerHtml();
                 }
             }
