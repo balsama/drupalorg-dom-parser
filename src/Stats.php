@@ -39,6 +39,13 @@ class Stats {
     private $machine_name;
 
     /**
+     * All releases found on D.O
+     *
+     * @var string[]
+     */
+    protected $allReleases;
+
+    /**
      * @param $project_name
      *   The machine name of a Drupal.org project.
      * @return \PHPHtmlParser\Dom
@@ -114,6 +121,7 @@ class Stats {
             $this->setProjectInfo($project_info);
         }
         $this->machine_name = $project_name;
+        $this->allReleases = $this->getAllReleases();
     }
 
     /**
@@ -273,26 +281,6 @@ class Stats {
 
     /**
      * @return array
-     *   List of recommended releases.
-     */
-    public function getRecommendedReleases() {
-        $dom = $this->dom;
-        $recommended_releases = [];
-        $recommended_releases_dom = $dom->find('.view-id-drupalorg_project_downloads .view-content > div.release');
-        /* @var $recommended_release \PHPHtmlParser\Dom\HtmlNode */
-        foreach ($recommended_releases_dom as $recommended_release) {
-            if (!empty(trim($recommended_release->innerHtml()))) {
-                if (strpos($recommended_release->innerHtml(), 'released')) {
-                    $releases[] = $recommended_release->find('span > strong.field-content a')
-                        ->innerHtml();
-                }
-            }
-        }
-        return $recommended_releases;
-    }
-
-    /**
-     * @return array
      *   List of all releases, including dev releases.
      */
     public function getAllReleases() {
@@ -301,42 +289,16 @@ class Stats {
         $all_releases_dom = $dom->find('.view-id-drupalorg_project_downloads .view-content > div.release');
         /* @var $release \PHPHtmlParser\Dom\HtmlNode */
         foreach ($all_releases_dom as $release) {
-            if (!empty(trim($release->innerhtml()))) {
-              $releases[] = $release->find('span > strong.field-content a')
-                ->innerHtml();
+            if (!empty(trim($release->innerHtml()))) {
+                if (strpos($release->innerHtml(), 'Development version') !== false) {
+                    $releases[] = $release->find('.release-info > p > a');
+                }
+                else {
+                    $releases[] = $release->find('span > strong.field-content a')->innerHtml();
+                }
             }
         }
         return $releases;
-    }
-
-    /**
-     * @return bool|mixed
-     *   Whether or not the maintainer has marked a release for D8 as
-     *   recommended.
-     */
-    public function hasRecommendedD8Release() {
-        $recommended_releases = $this->getRecommendedReleases();
-        foreach ($recommended_releases as $recommended_release) {
-            if (substr($recommended_release, 0, 3) === '8.x') {
-                return $recommended_release;
-            }
-        }
-        return FALSE;
-    }
-
-    /**
-     * @return bool|mixed
-     *   Whether or not there is a full, tagged release for D8.
-     */
-    public function hasFullD8Release() {
-        $d8Release = $this->hasRecommendedD8Release();
-        if (!$d8Release) {
-            return FALSE;
-        }
-        if (preg_match('/^8\.x-[1-9]\.\d*$/', $d8Release)) {
-            return $d8Release;
-        }
-        return FALSE;
     }
 
     /**
@@ -350,11 +312,11 @@ class Stats {
      *   - no D8 development
      */
     public function getD8Stability() {
-        if ($this->hasFullD8Release()) {
-            return 'full release';
-        }
-        $releases = $this->getAllReleases();
+        $releases = $this->allReleases;
         foreach ($releases as $release) {
+            if (preg_match('/^8\.x-[1-9]\.\d*$/', $release)) {
+              return 'full release';
+            }
             if (preg_match('/^8\.x-[1-9]\.\d*-alpha\d*/', $release)) {
                 return 'alpha';
             }
