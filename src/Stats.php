@@ -293,8 +293,7 @@ class Stats {
                 if (strpos($release->innerHtml(), 'Development version') !== false) {
                     $releases[] = $release->find('.release-info > p > a')->innerHtml();
                 }
-                $potential = $release->find('span > strong.field-content a');
-                if ($potential['collection']) {
+                if ($release->find('span > strong.field-content a')->count()) {
                     $releases[] = $release->find('span > strong.field-content a')->innerHtml();
                 }
             }
@@ -303,6 +302,50 @@ class Stats {
     }
 
     /**
+     * Gets the stability of D8 releases.
+     *
+     * @return array
+     *   An array keyed by the project's D8 release values with the stability as the value.
+     */
+    public function getKeyedStabilities() {
+        $releases = $this->allReleases;
+        $keyed_releases = [];
+        foreach ($releases as $release) {
+            $stability = null;
+            if (preg_match('/^8\.x-[1-9]\.\d*$/', $release)) {
+                $stability = 'full release';
+            }
+            elseif (preg_match('/^8\.x-[1-9]\.\d*-rc\d*/', $release)) {
+                $stability = 'rc';
+            }
+            elseif (preg_match('/^8\.x-[1-9]\.\d*-beta\d*/', $release)) {
+                $stability = 'beta';
+            }
+            elseif (preg_match('/^8\.x-[1-9]\.\d*-alpha\d*/', $release)) {
+                $stability = 'alpha';
+            }
+            elseif (preg_match('/^8\.x-[1-9]\.x-dev/', $release)) {
+                $stability = 'dev';
+            }
+            if ($stability) {
+                $keyed_releases[$release] = $stability;
+            }
+        }
+
+        $order = ['full_release', 'rc', 'beta', 'alpha', 'dev'];
+        $ordered_keyed_releases = array_merge(array_flip($order), array_flip($keyed_releases));
+        foreach ($ordered_keyed_releases as $stability => $value) {
+            if (is_numeric($value)) {
+                unset($ordered_keyed_releases[$stability]);
+            }
+        }
+
+        return $ordered_keyed_releases;
+    }
+
+    /**
+     * The highest stability of any D8 release.
+     *
      * @return string
      *   The stability of the D8 release if one exists. Possible values:
      *   - full release
@@ -313,25 +356,11 @@ class Stats {
      *   - no D8 development
      */
     public function getD8Stability() {
-        $releases = $this->allReleases;
-        foreach ($releases as $release) {
-            if (preg_match('/^8\.x-[1-9]\.\d*$/', $release)) {
-              return 'full release';
-            }
-            if (preg_match('/^8\.x-[1-9]\.\d*-alpha\d*/', $release)) {
-                return 'alpha';
-            }
-            elseif (preg_match('/^8\.x-[1-9]\.\d*-beta\d*/', $release)) {
-                return 'beta';
-            }
-            elseif (preg_match('/^8\.x-[1-9]\.\d*-rc\d*/', $release)) {
-                return 'rc';
-            }
-            elseif (preg_match('/^8\.x-[1-9]\.x-dev/', $release)) {
-                return 'dev';
-            }
+        $stabilities = $this->getKeyedStabilities();
+        if (!$stabilities) {
+            return 'no D8 development';
         }
-        return 'no D8 development';
+        return $stabilities[0];
     }
 
     public function getHumanReadableName() {
