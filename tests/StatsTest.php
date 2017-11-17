@@ -7,7 +7,7 @@ class StatsTest extends PHPUnit_Framework_TestCase {
 
     public function testGetD8Stability() {
         $project = new Stats('metatag');
-        $baz = $project->getD8Stability();
+        $project->getD8Stability();
     }
 
     /**

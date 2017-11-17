@@ -360,7 +360,7 @@ class Stats {
         if (!$stabilities) {
             return 'no D8 development';
         }
-        return $stabilities[0];
+        return reset($stabilities);
     }
 
     public function getHumanReadableName() {
