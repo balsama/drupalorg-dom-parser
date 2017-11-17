@@ -332,7 +332,7 @@ class Stats {
             }
         }
 
-        $order = ['full_release', 'rc', 'beta', 'alpha', 'dev'];
+        $order = ['full release', 'rc', 'beta', 'alpha', 'dev'];
         $ordered_keyed_releases = array_merge(array_flip($order), array_flip($keyed_releases));
         foreach ($ordered_keyed_releases as $stability => $value) {
             if (is_numeric($value)) {
@@ -360,7 +360,8 @@ class Stats {
         if (!$stabilities) {
             return 'no D8 development';
         }
-        return reset($stabilities);
+        reset($stabilities);
+        return key($stabilities);
     }
 
     public function getHumanReadableName() {
