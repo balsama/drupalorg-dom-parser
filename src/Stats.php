@@ -112,7 +112,7 @@ class Stats {
      * @return string
      */
     public function getHumanReadableName() {
-        $dom = $this->dom;
+        $dom = $this->project_dom;
         return $dom->find('#page-subtitle')->innerHtml();
     }
 
