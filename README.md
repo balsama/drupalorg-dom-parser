@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/balsama/drupalorg-dom-parser.svg?branch=0.0.x)](https://travis-ci.org/balsama/drupalorg-dom-parser)
+[![Build Status](https://travis-ci.org/balsama/drupalorg-dom-parser.svg?branch=1.0.x)](https://travis-ci.org/balsama/drupalorg-dom-parser)
 
 # Drupal.org DOM Parser
 Retrieves information about a specified project from Drupal.org.
