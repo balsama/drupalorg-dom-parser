@@ -1,13 +1,20 @@
 <?php
 
 use Balsama\DrupalOrgProject\Stats;
-use PHPHtmlParser\Dom;
 
 class StatsTest extends PHPUnit_Framework_TestCase {
 
     public function testGetD8Stability() {
         $project = new Stats('metatag');
         $project->getD8Stability();
+    }
+
+    /**
+     * The Drupal project is a bit of a snowflake. This just tests that we're able to generate a stats object for it.
+     */
+    public function testDrupalProject() {
+        $project = new Stats('drupal');
+        $this->assertInstanceOf('Balsama\DrupalOrgProject\Stats', $project);
     }
 
     /**

@@ -84,12 +84,17 @@ class ProjectInfo {
      * @param Dom\Collection $project_info
      *   The project info list item from a D.O project page.
      *
-     * @return Dom\HtmlNode
-     *   The list item which contains the stats needle. Assumes there is only one.
+     * @return mixed Dom\HtmlNode or null
+     *   The list item which contains the stats needle. Assumes there is only one. Or null if the project doesn't
+     *   contain a project-info list.
      *
      * @throws ChildNotFoundException
      */
     protected function fetchStats(Dom\Collection $project_info) {
+        if (!$project_info->count()) {
+            return;
+        }
+
         /* @var $list_items \PHPHtmlParser\Dom\HtmlNode[] */
         $list_items = $project_info->getChildren();
         foreach ($list_items as $list_item) {
