@@ -28,4 +28,11 @@ $project_stats = new Balsama\DrupalOrgProject\Stats($project_name);
 * Human-readable name `$project_stats->getHumanReadableName`
 * Machine name `$project_stats->getMachineName`
 
-## Common usage
+## Other classes
+If you're only interested in getting the info from the usage table, you can use the `Usage` class instead which only
+fetches data from the /project/usage/{project_name} page. This is somewhat less likely to break as D.O seems to change
+the markup of that page less frequently.
+
+## Why?
+At the time this was created, there wasn't any public facing D.O API. Even now, there is some information that's either
+not available or is cumbersome to get via the API.
