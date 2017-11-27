@@ -12,21 +12,21 @@ class ProjectInfo {
      *
      * @var string
      */
-    private $info_selector = '.project-info';
+    protected $info_selector = '.project-info';
 
     /**
      * Needle used to determine whether a project info list item is the statistics item.
      *
      * @var string
      */
-    private $stats_needle = 'sites report using this';
+    protected $stats_needle = 'sites report using this';
 
     /**
      * The list item containing project statistics.
      *
      * @var Dom\HtmlNode
      */
-    private $stats;
+    protected $stats;
 
     /**
      * The reported numbed of project downloads.

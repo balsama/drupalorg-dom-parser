@@ -12,7 +12,7 @@ class Stats {
      *
      * @var object PHPHtmlParser\Dom
      */
-    private $project_dom;
+    protected $project_dom;
 
     /**
      * The contents of the Drupal.org project usage page for the specified
@@ -20,28 +20,35 @@ class Stats {
      *
      * @var object PHPHtmlParser\Dom
      */
-    private $stats_dom;
+    protected $stats_dom;
 
     /**
      * Basic info about the project gleaned from the project page's info list.
      *
      * @var ProjectInfo
      */
-    private $project_info;
+    protected $project_info;
+
+    /**
+     * The machine name of the project provided to the constructor.
+     *
+     * @var string
+     */
+    protected $machine_name;
 
     /**
      * The project releases.
      *
      * @var Releases;
      */
-    private $releases;
+    protected $releases;
 
     /**
      *
      *
      * @var array
      */
-    private $project_usage;
+    protected $project_usage;
 
     /**
      * Accessor for total project installs.
@@ -117,12 +124,22 @@ class Stats {
     }
 
     /**
+     * The machine name of the project. This is also the $project_name value passed into the constructor.
+     *
+     * @return string
+     */
+    public function getMachineName() {
+        return $this->machine_name;
+    }
+
+    /**
      * Stats constructor.
      *
      * @param $project_name
      *   The machine name of a Drupal.org project.
      */
     public function __construct($project_name) {
+        $this->machine_name = $project_name;
         $this->project_dom = new Dom;
         $this->stats_dom = new Dom;
         $this->project_dom->loadFromUrl('https://www.drupal.org/project/' . $project_name);
@@ -136,7 +153,7 @@ class Stats {
      * @return array
      *   Rows of the specified project's usage statistic table.
      */
-    private function fetchAllProjectUsage() {
+    protected function fetchAllProjectUsage() {
         $stats_dom = $this->stats_dom;
         $stat_cols = $stats_dom->find('#project-usage-project-api thead tr', 0);
         $stat = [];
