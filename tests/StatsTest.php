@@ -11,21 +11,6 @@ class StatsTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * The dom and stats_dom variables are set and that they are
-     * PHPHtmlParser\Dom objects.
-     */
-    public function testDomObjects() {
-        $project_name = 'ctools';
-        $project = new Stats($project_name);
-
-        $dom = $project->getDom();
-        $this->assertInstanceOf('PHPHtmlParser\Dom', $dom);
-
-        $stats_dom = $project->getStatsDom();
-        $this->assertInstanceOf('PHPHtmlParser\Dom', $stats_dom);
-    }
-
-    /**
      * Usage statistics are retrieved and within the expected range.
      */
     public function testUsageStatistics() {
