@@ -3,27 +3,29 @@
 # Drupal.org DOM Parser
 Retrieves information about a specified project from Drupal.org.
 
+## Usage
+
+```
+$project_name = 'ctools';
+$project_stats = new Balsama\DrupalOrgProject\Stats($project_name);
+```
+
 ## Available information
-* D8 stability (E.g. 'full release' or 'beta')
-* Latest D8 usage statistic
-* All usage statistics as an array
-* Whether or not there is recommended D8 release
-* Whether or not there is a full D8 release
-* Whether or not the project is actively maintained
-* Human-readable name of the project
+
+### General (Taken from the "Project information" section of the project page)
+* Total downloads `$project->getTotalDownloads`
+* Total installs `$project->getTotalInstalls`
+
+### Releases (Deduced from the "Downloads" section of the project page)
+* Drupal 8 Stability `$project_stats->getD8Stability`
+
+### Usage (Taken from the Project Usage table on the "project/usage" page)
+* Current Drupal 8 usage `$project_stats->getCurrentD8Usage`
+* Current Drupal 7 usage `$project_stats->getCurrentD7Usage`
+* All usage data `$project_stats->getAllUsage`
+
+### Other
+* Human-readable name `$project_stats->getHumanReadableName`
+* Machine name `$project_stats->getMachineName`
 
 ## Common usage
-
-````
-    $project_name = 'ctools';
-    $project = new Balsama\DrupalOrgProject\Stats($project_name);
-    
-    // Gets the human-readbale name of the project:
-    $name = $project->getHumanReadableName();
-    
-    // Gets the stability of the D8 version. E.g. full release or beta:
-    $stability = $project->getD8Stability();
-    
-    // Gets the most recent reported number of D8 installs:
-    $usage = $project->getCurrentD8Usage();
-````
